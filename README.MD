@@ -5,6 +5,14 @@ Certain purpose:
 - determine in which country is input LatLng coordinate
 - very fast processing thru GeoJSON polygons
 
+## func (\*Decoder) Geocode
+
+Geocode gets lat and lng, returns country ISO code
+
+```text
+  func (d *Decoder) Geocode(lat float64, lng float64) (string, error)
+```
+
 ## Example
 
 ```go
