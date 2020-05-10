@@ -2,7 +2,7 @@
 
 Certain purpose:
 
-- determine in which country is input LatLng coordinate
+- determine in which country is Lat Lng coordinate
 - very fast processing thru GeoJSON polygons
 
 ## func (\*Decoder) Geocode
