@@ -6,3 +6,72 @@
 // This package uses GeoJSON polygons.
 // DATASET source: https://datahub.io/core/geo-countries#data-cli
 package revgeo
+
+import (
+	"compress/gzip"
+	"github.com/paulmach/orb/geojson"
+	"os"
+	"log"
+	"io/ioutil"
+	"fmt"
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/planar"
+)
+
+// dataPath path to compressed geojson
+const dataPath = "./data/countries.geojson.gz"
+
+// Decoder holds gemetry in memory and provides method reverseGeocode(), it should be inicialized by loadGeometry() method
+type Decoder struct {
+	fc *geojson.FeatureCollection
+}
+
+func (d *Decoder) loadGeometry() {
+	file, err := os.Open(dataPath)
+	defer file.Close()
+	if err != nil {
+    log.Panic(err)
+	}
+
+	gzipReader, err := gzip.NewReader(file)
+  defer gzipReader.Close()
+  if err != nil {
+    log.Panic(err)
+	}
+
+	s, err := ioutil.ReadAll(gzipReader)
+
+	featureCollection, err := geojson.UnmarshalFeatureCollection(s)
+	if err != nil {
+    log.Panic(err)
+	}
+
+	d.fc = featureCollection
+	
+}
+
+func (d *Decoder) geocode(lat float64, lng float64) (string, error) {
+
+	point := orb.Point{lat, lng}
+	if d.fc == nil {
+		log.Panicln("Before use, decoder has to be inicialized by invoking loadGeometry()")
+	}
+	for _, feature := range d.fc.Features {
+			// Try on a MultiPolygon to begin
+			multiPoly, isMulti := feature.Geometry.(orb.MultiPolygon)
+			if isMulti {
+					if planar.MultiPolygonContains(multiPoly, point) {
+							return fmt.Sprintf("%v", feature.Properties["ISO_A3"]), nil
+					}
+			} else {
+					// Fallback to Polygon
+					polygon, isPoly := feature.Geometry.(orb.Polygon)
+					if isPoly {
+							if planar.PolygonContains(polygon, point) {
+								return fmt.Sprintf("%v", feature.Properties["ISO_A3"]), nil
+							}
+					}
+			}
+	}
+	return "", fmt.Errorf("Unable to find country for lat: %v lng: %v", lat, lng)
+}

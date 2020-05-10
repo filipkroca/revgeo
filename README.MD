@@ -3,5 +3,4 @@
 Certain purpose:
 
 - determine in which country is input LatLng coordinate
-- very fast processing thru GeoJSON polylines
-- example HTTP REST server
+- very fast processing thru GeoJSON polygons
