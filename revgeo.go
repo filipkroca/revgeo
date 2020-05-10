@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/planar"
-	"github.com/gobuffalo/packr/v2"
+	"bytes"
 )
 
 // dataPath path to compressed geojson
@@ -29,16 +29,14 @@ type Decoder struct {
 
 func (d *Decoder) loadGeometry() {
 
-	// embed assets with packr
-	box := packr.New("data", dataPath)
-		
-	file, err := box.Open(fileName)
-	defer file.Close()
+	
+	data, err := Asset("data/countries.geojson.gz")
 	if err != nil {
-    log.Panic(err)
+		log.Panicln(err)
 	}
+	
 
-	gzipReader, err := gzip.NewReader(file)
+	gzipReader, err := gzip.NewReader(bytes.NewReader(data))
   defer gzipReader.Close()
   if err != nil {
     log.Panic(err)
