@@ -42,3 +42,9 @@ func main() {
   // CZE
 }
 ```
+
+## Performance
+
+```text
+BenchmarkDecode_Geocode-8   300   5265501 ns/op      49 B/op      2 allocs/op
+```
