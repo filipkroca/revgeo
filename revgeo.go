@@ -19,7 +19,7 @@ import (
 )
 
 // dataPath path to compressed geojson
-const dataPath = "./data/countries.geojson.gz"
+const dataPath = "./assets/countries.geojson.gz"
 
 // Decoder holds gemetry in memory and provides method Geocode()
 type Decoder struct {
@@ -27,6 +27,15 @@ type Decoder struct {
 }
 
 func (d *Decoder) loadGeometry() {
+	files, err := ioutil.ReadDir("./")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    for _, f := range files {
+            fmt.Println(f.Name())
+		}
+		
 	file, err := os.Open(dataPath)
 	defer file.Close()
 	if err != nil {
