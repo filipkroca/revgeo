@@ -10,16 +10,17 @@ package revgeo
 import (
 	"compress/gzip"
 	"github.com/paulmach/orb/geojson"
-	"os"
 	"log"
 	"io/ioutil"
 	"fmt"
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/planar"
+	"github.com/gobuffalo/packr"
 )
 
 // dataPath path to compressed geojson
-const dataPath = "./assets/countries.geojson.gz"
+const dataPath = "./data"
+const fileName = "countries.geojson.gz"
 
 // Decoder holds gemetry in memory and provides method Geocode()
 type Decoder struct {
@@ -27,16 +28,11 @@ type Decoder struct {
 }
 
 func (d *Decoder) loadGeometry() {
-	files, err := ioutil.ReadDir("./")
-    if err != nil {
-        log.Fatal(err)
-    }
 
-    for _, f := range files {
-            fmt.Println(f.Name())
-		}
+	box := packr.NewBox(dataPath)
+
 		
-	file, err := os.Open(dataPath)
+	file, err := box.Open(fileName)
 	defer file.Close()
 	if err != nil {
     log.Panic(err)
