@@ -21,7 +21,7 @@ import (
 // dataPath path to compressed geojson
 const dataPath = "./data/countries.geojson.gz"
 
-// Decoder holds gemetry in memory and provides method reverseGeocode(), it should be inicialized by loadGeometry() method
+// Decoder holds gemetry in memory and provides method Geocode()
 type Decoder struct {
 	fc *geojson.FeatureCollection
 }
@@ -50,11 +50,13 @@ func (d *Decoder) loadGeometry() {
 	
 }
 
-func (d *Decoder) geocode(lat float64, lng float64) (string, error) {
+// Geocode gets lat and lng, returns country ISO code
+func (d *Decoder) Geocode(lat float64, lng float64) (string, error) {
 
 	point := orb.Point{lat, lng}
 	if d.fc == nil {
-		log.Panicln("Before use, decoder has to be inicialized by invoking loadGeometry()")
+		// load gemetry from GeoJSON
+		d.loadGeometry()
 	}
 	for _, feature := range d.fc.Features {
 			// Try on a MultiPolygon to begin

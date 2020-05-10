@@ -8,14 +8,13 @@ import ("testing"
 
 func ExampleDecoder_geocode() {
 	decoder := Decoder{}
-	decoder.loadGeometry()
 
 	var lat float64
 	var lng float64
 
 	lat = 48.75181328781114
 	lng = 16.234285804999985
-	country, err := decoder.geocode(lng, lat)
+	country, err := decoder.Geocode(lng, lat)
 
 	if err != nil {
 		log.Panicln(err)
@@ -25,15 +24,16 @@ func ExampleDecoder_geocode() {
 	// Output:
 	// CZE
 }
-func BenchmarkDecode_geocode(b *testing.B) {
+func BenchmarkDecode_Geocode(b *testing.B) {
 	
 	decoder := Decoder{}
-	decoder.loadGeometry()
+	// first call invoke GeoJSON load
+	decoder.Geocode(rand.Float64()*100, rand.Float64()*100)		
 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		decoder.geocode(rand.Float64()*100, rand.Float64()*100)		
+		decoder.Geocode(rand.Float64()*100, rand.Float64()*100)		
 	}
 	
 }
