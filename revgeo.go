@@ -8,14 +8,15 @@
 package revgeo
 
 import (
-	"compress/gzip"
-	"github.com/paulmach/orb/geojson"
-	"log"
-	"io/ioutil"
-	"fmt"
-	"github.com/paulmach/orb"
-	"github.com/paulmach/orb/planar"
 	"bytes"
+	"compress/gzip"
+	"fmt"
+	"io/ioutil"
+	"log"
+
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"
+	"github.com/paulmach/orb/planar"
 )
 
 // dataPath path to compressed geojson
@@ -24,18 +25,18 @@ const fileName = "countries.geojson.gz"
 
 // Decoder holds gemetry in memory and provides method Geocode()
 type Decoder struct {
-	polygons []polygonWithIso
+	polygons      []polygonWithIso
 	multiPolygons []multiPolygonWithIso
 }
 
 type polygonWithIso struct {
 	polygon orb.Polygon
-	iso string
+	iso     string
 }
 
 type multiPolygonWithIso struct {
 	multiPolygon orb.MultiPolygon
-	iso string
+	iso          string
 }
 
 func (d *Decoder) loadGeometry() {
@@ -47,19 +48,18 @@ func (d *Decoder) loadGeometry() {
 	if err != nil {
 		log.Panicln(err)
 	}
-	
 
 	gzipReader, err := gzip.NewReader(bytes.NewReader(data))
-  defer gzipReader.Close()
-  if err != nil {
-    log.Panic(err)
+	defer gzipReader.Close()
+	if err != nil {
+		log.Panic(err)
 	}
 
 	s, err := ioutil.ReadAll(gzipReader)
 
 	featureCollection, err := geojson.UnmarshalFeatureCollection(s)
 	if err != nil {
-    log.Panic(err)
+		log.Panic(err)
 	}
 
 	for _, feature := range featureCollection.Features {
@@ -68,16 +68,16 @@ func (d *Decoder) loadGeometry() {
 		if isMulti {
 			multiPolygons = append(multiPolygons, multiPolygonWithIso{multiPoly, feature.Properties["ISO_A3"].(string)})
 		} else {
-				polygon, isPoly := feature.Geometry.(orb.Polygon)
-				if isPoly {
-					polygons = append(polygons, polygonWithIso{polygon, feature.Properties["ISO_A3"].(string)})
-				}
+			polygon, isPoly := feature.Geometry.(orb.Polygon)
+			if isPoly {
+				polygons = append(polygons, polygonWithIso{polygon, feature.Properties["ISO_A3"].(string)})
+			}
 		}
 	}
 
 	d.polygons = polygons
 	d.multiPolygons = multiPolygons
-	
+
 }
 
 // Geocode gets lat and lng, returns country ISO code
@@ -100,6 +100,6 @@ func (d *Decoder) Geocode(lat float64, lng float64) (string, error) {
 			return fmt.Sprintf("%v", multiPolygon.iso), nil
 		}
 	}
-	
+
 	return "", fmt.Errorf("Unable to find country for lat: %v lng: %v", lat, lng)
 }

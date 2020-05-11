@@ -1,9 +1,10 @@
 package revgeo
 
-import ("testing"
-"math/rand"
-"fmt"
-"log"
+import (
+	"fmt"
+	"log"
+	"math/rand"
+	"testing"
 )
 
 func ExampleDecoder_geocode() {
@@ -25,15 +26,15 @@ func ExampleDecoder_geocode() {
 	// CZE
 }
 func BenchmarkDecode_Geocode(b *testing.B) {
-	
+
 	decoder := Decoder{}
 	// first call invoke GeoJSON load
-	decoder.Geocode(rand.Float64()*100, rand.Float64()*100)		
+	decoder.Geocode(rand.Float64()*100, rand.Float64()*100)
 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		decoder.Geocode(rand.Float64()*100, rand.Float64()*100)		
+		decoder.Geocode(rand.Float64()*100, rand.Float64()*100)
 	}
-	
+
 }
