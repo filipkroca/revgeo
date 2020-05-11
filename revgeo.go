@@ -103,22 +103,3 @@ func (d *Decoder) Geocode(lat float64, lng float64) (string, error) {
 	
 	return "", fmt.Errorf("Unable to find country for lat: %v lng: %v", lat, lng)
 }
-
-/*
-
-	for _, feature := range d.fc.Features {
-		// Try on a MultiPolygon to begin
-		multiPoly, isMulti := feature.Geometry.(orb.MultiPolygon)
-		if isMulti {
-				if planar.MultiPolygonContains(multiPoly, point) {
-						return fmt.Sprintf("%v", feature.Properties["ISO_A3"]), nil
-				}
-		} else {
-				// Fallback to Polygon
-				polygon, isPoly := feature.Geometry.(orb.Polygon)
-				if isPoly {
-						if planar.PolygonContains(polygon, point) {
-							return fmt.Sprintf("%v", feature.Properties["ISO_A3"]), nil
-						}
-				}
-		}*/
