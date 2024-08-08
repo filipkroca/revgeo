@@ -15,7 +15,7 @@ func ExampleDecoder_geocode() {
 
 	lat = 48.75181328781114
 	lng = 16.234285804999985
-	country, err := decoder.Geocode(lng, lat)
+	country, err := decoder.Geocode(lat, lng)
 
 	if err != nil {
 		log.Panicln(err)

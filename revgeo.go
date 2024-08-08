@@ -83,7 +83,7 @@ func (d *Decoder) loadGeometry() {
 // Geocode gets lat and lng, returns country ISO code
 func (d *Decoder) Geocode(lat float64, lng float64) (string, error) {
 
-	point := orb.Point{lat, lng}
+	point := orb.Point{lng, lat}
 	if d.polygons == nil {
 		// load gemetry from GeoJSON
 		d.loadGeometry()
